@@ -44,6 +44,11 @@ namespace Player
         private Vector2 _currentRotation;
 
         /// <summary>
+        /// Indicates whether a weapon is currently equipped.
+        /// </summary>
+        private bool _isWeaponEquipped = false;
+        
+        /// <summary>
         /// Initializes the cursor in locked mode at startup.
         /// </summary>
         private void Awake()

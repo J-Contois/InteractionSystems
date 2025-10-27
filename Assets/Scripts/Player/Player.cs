@@ -1,6 +1,8 @@
 using UnityEngine;
 using static UnityEngine.InputSystem.InputAction;
 
+using Toggles.Setters;
+
 namespace Player
 {
     /// <summary>
@@ -21,6 +23,9 @@ namespace Player
         [Tooltip("Vertical rotation limits (pitch): X = minimum, Y = maximum")]
         [SerializeField] private Vector2 minMaxYaw = new(-90f, 90f);
     
+        [Tooltip("Layer mask used to detect interactions with objects.")]
+        [SerializeField] private LayerMask interactionMask = LayerMask.NameToLayer("Default");
+        
         [Header("Transforms References")]
         [Tooltip("Transform player root (horizontal rotation)")]
         [SerializeField] private Transform root = null;
@@ -42,11 +47,6 @@ namespace Player
         /// Current accumulated rotation (X = pitch, Y = yaw).
         /// </summary>
         private Vector2 _currentRotation;
-
-        /// <summary>
-        /// Indicates whether a weapon is currently equipped.
-        /// </summary>
-        private bool _isWeaponEquipped = false;
         
         /// <summary>
         /// Initializes the cursor in locked mode at startup.
@@ -107,6 +107,32 @@ namespace Player
         public void Player_OnLook(CallbackContext context)
         {
             _lookInput = context.ReadValue<Vector2>();
+        }
+        
+        /// <summary>
+        /// Callback for the player's interact action (Input System).
+        /// Performs a raycast to detect interactions with objects.
+        /// </summary>
+        /// <param name="context">Context containing the input data</param>
+        public void Player_OnInteract(CallbackContext context)
+        {
+            if (context.performed)
+            {
+                Ray ray = new Ray(head.position, head.forward);
+                RaycastHit hit;
+
+                if (Physics.Raycast(ray, out hit, 10f, interactionMask))
+                {
+                
+                    Debug.DrawRay(head.position, transform.TransformDirection(head.forward) * hit.distance, Color.red);
+                    Debug.Log(hit.collider.gameObject.name);
+
+                    if (hit.collider.TryGetComponent(out InteractionToggleSetter interactionToggleSetter))
+                    {
+                        interactionToggleSetter.Interact();
+                    }
+                }
+            }
         }
     }
 }

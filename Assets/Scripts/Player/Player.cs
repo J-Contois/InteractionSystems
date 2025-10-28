@@ -1,7 +1,7 @@
+﻿using Toggles.Components;
+using Toggles.Setters;
 using UnityEngine;
 using static UnityEngine.InputSystem.InputAction;
-
-using Toggles.Setters;
 
 namespace Player
 {
@@ -116,21 +116,34 @@ namespace Player
         /// <param name="context">Context containing the input data</param>
         public void Player_OnInteract(CallbackContext context)
         {
-            if (context.performed)
+            if (!context.performed) return;
+
+            Ray ray = new Ray(head.position, head.forward);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, 10f, interactionMask))
             {
-                Ray ray = new Ray(head.position, head.forward);
-                RaycastHit hit;
+                Debug.DrawRay(head.position, transform.TransformDirection(head.forward) * hit.distance, Color.red);
+                Debug.Log(hit.collider.gameObject.name);
 
-                if (Physics.Raycast(ray, out hit, 10f, interactionMask))
+                // If the player is holding an object and looking at a support → place
+                if (PickupToggleComponent._currentPickup != null && hit.collider.TryGetComponent(out PickupSupport support))
                 {
-                
-                    Debug.DrawRay(head.position, transform.TransformDirection(head.forward) * hit.distance, Color.red);
-                    Debug.Log(hit.collider.gameObject.name);
+                    PickupToggleComponent._currentPickup.TryPlaceOn(support);
+                    return;
+                }
 
-                    if (hit.collider.TryGetComponent(out InteractionToggleSetter interactionToggleSetter))
-                    {
-                        interactionToggleSetter.Interact();
-                    }
+                // If the player is holding an object and is not looking at a support → release freely
+                if (PickupToggleComponent._currentPickup != null)
+                {
+                    PickupToggleComponent._currentPickup.Deactivate();
+                    return;
+                }
+
+                // Otherwise, classic interaction via InteractionToggleSetter
+                if (hit.collider.TryGetComponent(out InteractionToggleSetter interactionToggleSetter))
+                {
+                    interactionToggleSetter.Interact();
                 }
             }
         }

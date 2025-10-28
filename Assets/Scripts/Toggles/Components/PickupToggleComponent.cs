@@ -1,32 +1,23 @@
-using UnityEngine;
+ï»¿using UnityEngine;
+
 using Core;
 
 namespace Toggles.Components
 {
     public class PickupToggleComponent : BaseToggleComponent
     {
-        [Header("Références")]
+        [Header("References")]
         [SerializeField] private GameObject pickupObject;
         [SerializeField] private Transform hand;
-        [SerializeField] private bool returnToOriginalPosition = true;
-
-        private Vector3 _originalPosition;
-        private Quaternion _originalRotation;
-        private Transform _originalParent;
 
         private Rigidbody _rigidbody;
         private Collider _collider;
 
-        private static GameObject _currentHeldObject;
-        private static PickupToggleComponent _currentPickup;
+        public static PickupToggleComponent _currentPickup;
 
         private void Awake()
         {
-            if (pickupObject == null) pickupObject = this.gameObject;
-
-            _originalPosition = pickupObject.transform.position;
-            _originalRotation = pickupObject.transform.rotation;
-            _originalParent = pickupObject.transform.parent;
+            pickupObject ??= gameObject;
 
             _rigidbody = pickupObject.GetComponent<Rigidbody>();
             _collider = pickupObject.GetComponent<Collider>();
@@ -34,82 +25,54 @@ namespace Toggles.Components
 
         protected override void ActivateComponent()
         {
-            if (_currentHeldObject != null && _currentHeldObject != pickupObject)
-            {
-                _currentPickup.DeactivateComponent();
-            }
+            _currentPickup?.DeactivateComponent();
 
-            _currentHeldObject = pickupObject;
             _currentPickup = this;
 
-            pickupObject.transform.SetParent(hand);
-            pickupObject.transform.localPosition = Vector3.zero;
-            pickupObject.transform.localRotation = Quaternion.identity;
+            SetTransformLocal(hand, Vector3.zero, Quaternion.identity, Vector3.one);
 
-            if (_rigidbody != null)
-            {
-                _rigidbody.isKinematic = true;
-                _rigidbody.useGravity = false;
-            }
-
-            if (_collider != null)
-            {
-                _collider.enabled = false;
-            }
+            SetPhysics(enabled: false);
         }
 
         protected override void DeactivateComponent()
         {
-            if (returnToOriginalPosition)
-                ReturnToOrigin();
-            else
-                DropObject();
-        }
-
-        private void ReturnToOrigin()
-        {
-            pickupObject.transform.SetParent(_originalParent);
-            pickupObject.transform.position = _originalPosition;
-            pickupObject.transform.rotation = _originalRotation;
-
-            if (_rigidbody != null)
-            {
-                _rigidbody.isKinematic = false;
-                _rigidbody.useGravity = true;
-            }
-
-            if (_collider != null)
-            {
-                _collider.enabled = true;
-            }
-
-            if (_currentHeldObject == pickupObject)
-            {
-                _currentHeldObject = null;
-                _currentPickup = null;
-            }
-        }
-
-        private void DropObject()
-        {
             pickupObject.transform.SetParent(null);
+            SetPhysics(enabled: true);
 
+            if (_currentPickup == this)
+                _currentPickup = null;
+        }
+
+        private void SetTransformLocal(Transform parent, Vector3 localPosition, Quaternion localRotation, Vector3 localScale)
+        {
+            pickupObject.transform.SetParent(parent, worldPositionStays: false);
+            pickupObject.transform.localPosition = localPosition;
+            pickupObject.transform.localRotation = localRotation;
+            pickupObject.transform.localScale = localScale;
+        }
+
+        private void SetPhysics(bool enabled)
+        {
             if (_rigidbody != null)
             {
-                _rigidbody.isKinematic = false;
-                _rigidbody.useGravity = true;
+                _rigidbody.isKinematic = !enabled;
+                _rigidbody.useGravity = enabled;
             }
 
             if (_collider != null)
-            {
-                _collider.enabled = true;
-            }
+                _collider.enabled = enabled;
+        }
 
-            if (_currentHeldObject == pickupObject)
-            {
-                _currentHeldObject = null;
-                _currentPickup = null;
-            }
+        public bool TryPlaceOn(PickupSupport support)
+        {
+            if (support == null || !support.CanPlace(pickupObject))
+                return false;
+
+            support.PlaceObject(pickupObject);
+
+            _currentPickup = null;
+
+            return true;
         }
     }
 }

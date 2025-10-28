@@ -192,7 +192,7 @@ GameObject:
   m_Component:
   - component: {fileID: 283116917}
   m_Layer: 0
-  m_Name: ObjectAnchor
+  m_Name: HandAnchor_Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -355,7 +355,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pickupObject: {fileID: 172537903}
-  hand: {fileID: 1647714143}
+  hand: {fileID: 283116917}
   returnToOriginalPosition: 1
 --- !u!54 &428150730
 Rigidbody:
@@ -633,7 +633,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pickupObject: {fileID: 699054828}
-  hand: {fileID: 1647714143}
+  hand: {fileID: 283116917}
   returnToOriginalPosition: 1
 --- !u!54 &699054834
 Rigidbody:
@@ -1496,7 +1496,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pickupObject: {fileID: 1718416950}
-  hand: {fileID: 1647714143}
+  hand: {fileID: 283116917}
   returnToOriginalPosition: 1
 --- !u!54 &2092944042
 Rigidbody:

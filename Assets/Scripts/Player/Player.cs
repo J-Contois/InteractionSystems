@@ -24,7 +24,7 @@ namespace Player
         [SerializeField] private Vector2 minMaxYaw = new(-90f, 90f);
     
         [Tooltip("Layer mask used to detect interactions with objects.")]
-        [SerializeField] private LayerMask interactionMask = LayerMask.NameToLayer("Default");
+        [SerializeField] private LayerMask interactionMask;
         
         [Header("Transforms References")]
         [Tooltip("Transform player root (horizontal rotation)")]

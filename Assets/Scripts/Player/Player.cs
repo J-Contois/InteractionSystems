@@ -1,6 +1,7 @@
 ﻿using Toggles.Components;
 using Toggles.Setters;
 using UnityEngine;
+using UnityEngineInternal;
 using static UnityEngine.InputSystem.InputAction;
 
 namespace Player
@@ -123,20 +124,29 @@ namespace Player
 
             if (Physics.Raycast(ray, out hit, 10f, interactionMask))
             {
+                Debug.Log("Ray");
                 Debug.DrawRay(head.position, transform.TransformDirection(head.forward) * hit.distance, Color.red);
-                Debug.Log(hit.collider.gameObject.name);
 
                 // If the player is holding an object and looking at a support → place
-                if (PickupToggleComponent._currentPickup != null && hit.collider.TryGetComponent(out PickupSupport support))
+                if (hit.collider.transform.parent.TryGetComponent(out PickupSupport support))
                 {
-                    PickupToggleComponent._currentPickup.TryPlaceOn(support);
-                    return;
+                    if (PickupToggleComponent.CurrentPickup != null)
+                    {
+                        PickupToggleComponent.CurrentPickup.TryPlaceOn(support);
+                    }
                 }
 
                 // If the player is holding an object and is not looking at a support → release freely
-                if (PickupToggleComponent._currentPickup != null)
+                if (hit.collider.TryGetComponent(out PickupToggleComponent pickup))
                 {
-                    PickupToggleComponent._currentPickup.Deactivate();
+                    Debug.Log("Passer PickupToggleComponent : " + PickupToggleComponent.CurrentPickup);
+                    if (PickupToggleComponent.CurrentPickup != null && PickupToggleComponent.CurrentPickup != pickup)
+                    {
+                        Debug.Log("TryPass");
+                        PickupToggleComponent.CurrentPickup.Deactivate();
+                    }
+
+                    pickup.Activate();
                     return;
                 }
 

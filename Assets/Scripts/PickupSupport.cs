@@ -22,7 +22,6 @@ public class PickupSupport : MonoBehaviour
         obj.transform.SetParent(t, worldPositionStays: false);
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localRotation = Quaternion.identity;
-        obj.transform.localScale = Vector3.one;
 
         if (obj.TryGetComponent<Rigidbody>(out var rb))
         {
@@ -31,7 +30,7 @@ public class PickupSupport : MonoBehaviour
         }
 
         if (obj.TryGetComponent<Collider>(out var collider))
-            collider.enabled = false;
+            collider.enabled = true;
     }
 
     public void ReleaseObject()

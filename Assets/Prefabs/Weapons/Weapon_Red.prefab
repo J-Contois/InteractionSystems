@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1417017296573980253}
   - component: {fileID: 1075363484528758540}
   - component: {fileID: 5250096937242016236}
+  - component: {fileID: 4609293211793139639}
   m_Layer: 6
   m_Name: Weapon_Red
   m_TagString: Untagged
@@ -133,7 +134,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -151,3 +152,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupObject: {fileID: 4111923933864914551}
   hand: {fileID: 0}
+--- !u!114 &4609293211793139639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4111923933864914551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66bef57d4600f6b4d981a3360af3e19c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toggleComponent: {fileID: 5250096937242016236}

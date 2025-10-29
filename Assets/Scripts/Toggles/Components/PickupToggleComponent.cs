@@ -13,7 +13,8 @@ namespace Toggles.Components
         private Rigidbody _rigidbody;
         private Collider _collider;
 
-        public static PickupToggleComponent _currentPickup;
+        private static PickupToggleComponent _currentPickup;
+        public static PickupToggleComponent CurrentPickup => _currentPickup;
 
         private void Awake()
         {
@@ -25,11 +26,23 @@ namespace Toggles.Components
 
         protected override void ActivateComponent()
         {
-            _currentPickup?.DeactivateComponent();
+            if (_currentPickup != null && _currentPickup != this)
+            {
+                _currentPickup.DeactivateComponent();
+            }
 
             _currentPickup = this;
+            Debug.Log(_currentPickup.gameObject.name);
 
-            SetTransformLocal(hand, Vector3.zero, Quaternion.identity, Vector3.one);
+            if (pickupObject.transform.parent.TryGetComponent<PickupSupport>(out var support))
+            {
+                Debug.Log("ICI");
+                support.ReleaseObject();
+            }
+
+            pickupObject.transform.SetParent(hand, false);
+            pickupObject.transform.localPosition = Vector3.zero;
+            pickupObject.transform.localRotation = Quaternion.identity;
 
             SetPhysics(enabled: false);
         }
@@ -38,17 +51,10 @@ namespace Toggles.Components
         {
             pickupObject.transform.SetParent(null);
             SetPhysics(enabled: true);
-
+            Debug.Log(_currentPickup.gameObject.name);
+            Debug.Log(this.gameObject.name);
             if (_currentPickup == this)
                 _currentPickup = null;
-        }
-
-        private void SetTransformLocal(Transform parent, Vector3 localPosition, Quaternion localRotation, Vector3 localScale)
-        {
-            pickupObject.transform.SetParent(parent, worldPositionStays: false);
-            pickupObject.transform.localPosition = localPosition;
-            pickupObject.transform.localRotation = localRotation;
-            pickupObject.transform.localScale = localScale;
         }
 
         private void SetPhysics(bool enabled)

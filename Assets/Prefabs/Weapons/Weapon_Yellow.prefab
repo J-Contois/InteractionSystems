@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5909410727533076875}
   - component: {fileID: 6082548219030255184}
   - component: {fileID: 3154829868114375614}
+  - component: {fileID: 4235358033212768391}
   m_Layer: 6
   m_Name: Weapon_Yellow
   m_TagString: Untagged
@@ -133,7 +134,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -151,3 +152,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupObject: {fileID: 7773783473785454454}
   hand: {fileID: 0}
+--- !u!114 &4235358033212768391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7773783473785454454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66bef57d4600f6b4d981a3360af3e19c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toggleComponent: {fileID: 3154829868114375614}

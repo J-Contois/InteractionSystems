@@ -124,7 +124,6 @@ namespace Player
 
             if (Physics.Raycast(ray, out hit, 10f, interactionMask))
             {
-                Debug.Log("Ray");
                 Debug.DrawRay(head.position, transform.TransformDirection(head.forward) * hit.distance, Color.red);
 
                 // If the player is holding an object and looking at a support → place
@@ -132,20 +131,16 @@ namespace Player
                     hit.collider.transform.parent.TryGetComponent(out PickupSupport support))
                 {
                     if (PickupToggleComponent.CurrentPickup != null)
-                    {
                         PickupToggleComponent.CurrentPickup.TryPlaceOn(support);
-                    }
+
+                    return;
                 }
 
                 // If the player is holding an object and is not looking at a support → release freely
                 if (hit.collider.TryGetComponent(out PickupToggleComponent pickup))
                 {
-                    Debug.Log("Passer PickupToggleComponent : " + PickupToggleComponent.CurrentPickup);
                     if (PickupToggleComponent.CurrentPickup != null && PickupToggleComponent.CurrentPickup != pickup)
-                    {
-                        Debug.Log("TryPass");
                         PickupToggleComponent.CurrentPickup.Deactivate();
-                    }
 
                     pickup.Activate();
                     return;
@@ -155,18 +150,15 @@ namespace Player
                 if (hit.collider.TryGetComponent(out InteractionToggleSetter interactionToggleSetter))
                 {
                     interactionToggleSetter.Interact();
+                    return;
                 }
             }
             else
             {
                 // No raycast hit - if the player is holding an object, drop it freely
                 if (PickupToggleComponent.CurrentPickup != null)
-                {
-                    Debug.Log("Drop object freely");
                     PickupToggleComponent.CurrentPickup.Deactivate();
-                }
             }
-
         }
     }
 }

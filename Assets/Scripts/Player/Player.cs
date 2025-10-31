@@ -128,7 +128,8 @@ namespace Player
                 Debug.DrawRay(head.position, transform.TransformDirection(head.forward) * hit.distance, Color.red);
 
                 // If the player is holding an object and looking at a support → place
-                if (hit.collider.transform.parent.TryGetComponent(out PickupSupport support))
+                if (hit.collider.transform.parent != null &&
+                    hit.collider.transform.parent.TryGetComponent(out PickupSupport support))
                 {
                     if (PickupToggleComponent.CurrentPickup != null)
                     {
@@ -156,6 +157,16 @@ namespace Player
                     interactionToggleSetter.Interact();
                 }
             }
+            else
+            {
+                // No raycast hit - if the player is holding an object, drop it freely
+                if (PickupToggleComponent.CurrentPickup != null)
+                {
+                    Debug.Log("Drop object freely");
+                    PickupToggleComponent.CurrentPickup.Deactivate();
+                }
+            }
+
         }
     }
 }

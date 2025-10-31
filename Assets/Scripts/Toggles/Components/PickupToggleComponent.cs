@@ -34,7 +34,8 @@ namespace Toggles.Components
             _currentPickup = this;
             Debug.Log(_currentPickup.gameObject.name);
 
-            if (pickupObject.transform.parent.TryGetComponent<PickupSupport>(out var support))
+            if (pickupObject.transform.parent != null &&
+                pickupObject.transform.parent.TryGetComponent<PickupSupport>(out var support))
             {
                 Debug.Log("ICI");
                 support.ReleaseObject();

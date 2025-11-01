@@ -52,8 +52,12 @@
     <Compile Include="Assets\Scripts\Weapon\BulletPool.cs" />
     <Compile Include="Assets\Scripts\Core\IToggle.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\PickupSupport.cs" />
+    <Compile Include="Assets\Scripts\Core\IToggle.cs" />
+    <Compile Include="Assets\Scripts\Toggles\Setters\InteractionToggleSetter.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Core\BaseToggleComponent.cs" />
+    <Compile Include="Assets\Scripts\Toggles\Components\PickupToggleComponent.cs" />
     <Compile Include="Assets\Scripts\Core\BaseToggleSetter.cs" />
     <Compile Include="Assets\Scripts\UI\HUDController.cs" />
     <Compile Include="Assets\Scripts\Player\Player.cs" />

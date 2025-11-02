@@ -4,8 +4,9 @@ using Core;
 namespace Toggles.Components
 {
     /// <summary>
-    /// Component that activates only when all specified conditions are met.
-    /// Checks if all PickupSupports have objects placed on them.
+    /// Component that activates a target AnimatorToggleComponent only when
+    /// all specified puzzle conditions are met. 
+    /// Checks if all linked PickupSupports have the correct objects placed.
     /// </summary>
     public class MultiConditionToggleComponent : BaseToggleComponent
     {
@@ -42,10 +43,19 @@ namespace Toggles.Components
             return true;
         }
 
+        /// <summary>
+        /// Empty override to prevent default activation behavior.
+        /// </summary>
         protected override void ActivateComponent() {}
 
+        /// <summary>
+        /// Empty override to prevent default deactivation behavior.
+        /// </summary>
         protected override void DeactivateComponent() {}
 
+        /// <summary>
+        /// Checks puzzle conditions and opens/closes the target animator accordingly.
+        /// </summary>
         public void ValidatePuzzle()
         {
             if (targetComponent == null) return;

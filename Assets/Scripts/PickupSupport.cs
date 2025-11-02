@@ -1,8 +1,16 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
+/// <summary>
+/// Represents a support point where the player can place pickup objects.
+/// Can validate objects either by a specific instance or by layer.
+/// Manages placement position, rotation, and physics of the placed object.
+/// </summary>
 public class PickupSupport : MonoBehaviour
 {
+    /// <summary>
+    /// Determines how the support validates objects placed on it.
+    /// </summary>
     public enum ValidationMode
     {
         SpecificObject,  // Specific GameObject instance
@@ -22,18 +30,24 @@ public class PickupSupport : MonoBehaviour
     [SerializeField] private string requiredLayerName = null;
 
     [Header("Placement")]
+    [Tooltip("Transform to place the object")]
     [SerializeField] private Transform placementPoint = null;
 
     private GameObject _currentObject;
+    
+    /// <summary>
+    /// Gets the object currently placed on this support.
+    /// </summary>
+    /// <returns>The currently placed GameObject, or null if empty</returns>
     public GameObject GetPlacedObject() => _currentObject;
     
     /// <summary>
-    /// Returns true if this support currently has an object placed on it.
+    /// True if this support currently has an object placed on it.
     /// </summary>
     public bool HasObject => _currentObject != null;
     
     /// <summary>
-    /// Returns true if this support has the CORRECT object placed on it.
+    /// True if the placed object is the correct one for this support
     /// </summary>
     public bool HasCorrectObject
     {
@@ -52,8 +66,10 @@ public class PickupSupport : MonoBehaviour
     }
 
     /// <summary>
-    /// Checks if an object can be placed on this support.
+    /// Determines if the given object can be placed on this support.
     /// </summary>
+    /// <param name="obj">The object to check</param>
+    /// <returns>True if the object can be placed; otherwise, false</returns>
     public bool CanPlace(GameObject obj)
     {
         if (obj == null || _currentObject != null)
@@ -68,6 +84,10 @@ public class PickupSupport : MonoBehaviour
 
     }
     
+    /// <summary>
+    /// Places the given object on this support.
+    /// </summary>
+    /// <param name="obj">The object to place</param>
     public void PlaceObject(GameObject obj)
     {
         if (!CanPlace(obj)) return;
@@ -89,6 +109,9 @@ public class PickupSupport : MonoBehaviour
             collider.enabled = true;
     }
 
+    /// <summary>
+    /// Release the object currently on this support
+    /// </summary>
     public void ReleaseObject()
     {
         _currentObject = null;

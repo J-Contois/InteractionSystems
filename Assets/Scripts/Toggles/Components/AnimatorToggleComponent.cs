@@ -6,7 +6,9 @@ namespace Toggles.Components
 {
     /// <summary>
     /// Component that controls an Animator by triggering animations.
-    /// Used for doors, bridges, traps, or any animated object.
+    /// Can be used for doors, bridges, traps, or any animated object.
+    /// Provides methods to play activation/deactivation animations
+    /// and keeps track of the open/closed state.
     /// </summary>
     public class AnimatorToggleComponent : BaseToggleComponent
     {
@@ -23,25 +25,40 @@ namespace Toggles.Components
         [Tooltip("Animation trigger name for deactivation")]
         [SerializeField] private string deactivateTriggerName = "Deactivate";
         
+        [Tooltip("Indicates whether the object is currently open")]
         [SerializeField] private bool isOpen = false;
 
+        /// <summary>
+        /// Automatically called in the editor to reset references.
+        /// Ensures an Animator is assigned.
+        /// </summary>
         private void Reset()
         {
             if (animator == null)
                 animator = GetComponent<Animator>();
         }
         
+        /// <summary>
+        /// Called when the component awakes.
+        /// Optionally disables animator if not starting in play mode.
+        /// </summary>
         private void Awake()
         {
             if (!startInPlayMode && animator != null)
                 animator.Update(0);
         }
         
+        /// <summary>
+        /// Activates this component by playing the activation animation.
+        /// </summary>
         protected override void ActivateComponent()
         {
             PlayActivateAnimation();
         }
         
+        /// <summary>
+        /// Deactivates this component by playing the deactivation animation.
+        /// </summary>
         protected override void DeactivateComponent()
         {
             PlayDeactivateAnimation();

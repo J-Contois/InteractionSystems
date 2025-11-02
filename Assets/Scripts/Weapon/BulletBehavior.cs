@@ -18,6 +18,8 @@ namespace Weapon
         /// <summary>Whether the bullet is currently active.</summary>
         private bool _active;
 
+        private Rigidbody _rigidbody;
+
         [Header("Hit Effects")]
         [Tooltip("Prefab for hit effect (particle)")]
         [SerializeField] private GameObject hitEffectPrefab;
@@ -26,6 +28,10 @@ namespace Weapon
         private AudioSource _audioSource;
         [Tooltip("Reference to WeaponController for screen shake")]
         [SerializeField] private WeaponController weaponController;
+        public void SetWeaponController(WeaponController controller)
+        {
+            weaponController = controller;
+        }
 
         /// <summary>
         /// Activates the bullet and sets its movement direction.
@@ -54,6 +60,16 @@ namespace Weapon
         private void Awake()
         {
             _audioSource = GetComponent<AudioSource>();
+            _rigidbody = GetComponent<Rigidbody>();
+            if (_rigidbody == null)
+            {
+                Debug.LogWarning("BulletBehavior: No Rigidbody found. Adding one for trigger events.");
+                _rigidbody = gameObject.AddComponent<Rigidbody>();
+            }
+            // Ensure bullet is not affected by gravity or physics forces
+            _rigidbody.isKinematic = false;
+            _rigidbody.useGravity = false;
+            _rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
         }
 
         /// <summary>
@@ -68,6 +84,12 @@ namespace Weapon
                 _audioSource.PlayOneShot(hitSound);
             if (weaponController)
                 weaponController.OnBulletHit();
+            // Damage enemy if hit (supports multi-collider enemies)
+            var enemy = other.GetComponentInParent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(_damage);
+            }
             Deactivate();
         }
 
@@ -78,6 +100,12 @@ namespace Weapon
         {
             _active = false;
             gameObject.SetActive(false);
+        }
+
+        private float _damage;
+        public void SetDamage(float damage)
+        {
+            _damage = damage;
         }
     }
 }

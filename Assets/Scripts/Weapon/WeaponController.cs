@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Weapon
 {
@@ -15,37 +16,16 @@ namespace Weapon
         [Tooltip("Reference to the player's camera")]
         [SerializeField] private Camera playerCamera;
 
-        [Header("Weapon Settings")]
-        [Tooltip("Field of view when aiming")]
-        [SerializeField] private float aimFOV = 40f;
-        [Tooltip("Normal field of view")]
-        [SerializeField] private float normalFOV = 60f;
-        [Tooltip("Fire rate in shots per second")]
-        [SerializeField] private float fireRate = 5f;
+        [Header("Weapon Data")]
+        [Tooltip("Current weapon data")]
+        [SerializeField] private WeaponData weaponData;
+        [Header("Weapon References")]
         [Tooltip("Prefab for the bullet/projectile")]
         [SerializeField] private GameObject bulletPrefab;
         [Tooltip("Transform for bullet spawn position")]
         [SerializeField] private Transform firePoint;
         [Tooltip("Bullet pool component")]
         [SerializeField] private BulletPool bulletPool;
-
-        [Header("Recoil & Spread")]
-        [Tooltip("Maximum bullet spread angle in degrees")]
-        [SerializeField] private float maxSpreadAngle = 3f;
-        [Tooltip("Camera recoil amount in degrees")]
-        [SerializeField] private float recoilAmount = 2f;
-        [Tooltip("Camera recoil recovery speed")]
-        [SerializeField] private float recoilRecovery = 8f;
-        private float _currentRecoil = 0f;
-
-        [Header("Ammo & Reload")]
-        [Tooltip("Maximum ammo in magazine")]
-        [SerializeField] private int maxAmmo = 30;
-        [Tooltip("Reload time in seconds")]
-        [SerializeField] private float reloadTime = 1.5f;
-        private int _currentAmmo;
-        private bool _isReloading;
-        private float _reloadTimer;
 
         [Header("Screen Shake")]
         [Tooltip("Screen shake intensity on hit")]
@@ -63,11 +43,23 @@ namespace Weapon
         private float _fireHoldTimer;
         private bool _isFiring;
         private const float fullAutoThreshold = 0.2f;
+        
+        [Header("Weapon Settings (Fallback)")]
+        [Tooltip("Maximum ammo in magazine (fallback)")]
+        [SerializeField] private int maxAmmo = 30;
+        [Tooltip("Reload time in seconds (fallback)")]
+        [SerializeField] private float reloadTime = 1.5f;
+        [Tooltip("Camera recoil amount in degrees (fallback)")]
+        [SerializeField] private float recoilAmount = 2f;
 
         [Header("Events")]
         public UnityEngine.Events.UnityEvent<int, int> onAmmoChanged;
         public UnityEngine.Events.UnityEvent<string> onWeaponChanged;
         public UnityEngine.Events.UnityEvent<bool> onWeaponActiveChanged;
+        
+        private int _currentAmmo;
+        private bool _isReloading;
+        private float _reloadTimer;
 
         /// <summary>Time until next allowed shot.</summary>
         private float _nextFireTime = 0f;
@@ -81,18 +73,14 @@ namespace Weapon
         private Quaternion _originalCameraRotation;
         private float _recoilOffset;
 
+        // Stores runtime data for each weapon by name
+        private Dictionary<string, int> weaponAmmoStates = new();
+
         /// <summary>
         /// Unity Update loop. Handles input for weapon actions and crosshair display.
         /// </summary>
         private void Update()
         {
-            // Ramasser une arme (ex: touche P)
-            if (Input.GetKeyDown(KeyCode.P))
-                TryPickupWeapon();
-            // Jeter une arme (ex: touche O)
-            if (Input.GetKeyDown(KeyCode.O))
-                TryDropWeapon();
-
             // Equip/unequip weapon (E/U)
             if (Input.GetKeyDown(KeyCode.E))
             {
@@ -121,7 +109,7 @@ namespace Weapon
                 if (Input.GetMouseButton(0) && Time.time >= _nextFireTime)
                 {
                     Shoot();
-                    _nextFireTime = Time.time + 1f / fireRate;
+                    _nextFireTime = Time.time + 1f / weaponData.fireRate;
                 }
             }
 
@@ -144,27 +132,10 @@ namespace Weapon
             HandleReload();
             HandleScreenShake();
             // Reload (R key)
-            if (Input.GetKeyDown(KeyCode.R) && !_isReloading && _currentAmmo < maxAmmo)
+            if (Input.GetKeyDown(KeyCode.R) && !_isReloading && _currentAmmo < weaponData.maxAmmo)
                 StartReload();
         }
 
-        /// <summary>
-        /// Simulates picking up a weapon.
-        /// </summary>
-        private void TryPickupWeapon()
-        {
-            _hasWeapon = true;
-        }
-        /// <summary>
-        /// Simulates dropping a weapon.
-        /// </summary>
-        private void TryDropWeapon()
-        {
-            _hasWeapon = false;
-            _isWeaponEquipped = false;
-            StopAiming();
-            onWeaponActiveChanged?.Invoke(false);
-        }
         /// <summary>
         /// Returns true if the player has picked up a weapon.
         /// </summary>
@@ -172,7 +143,7 @@ namespace Weapon
         /// <summary>
         /// Returns true if the weapon is currently equipped.
         /// </summary>
-        private bool IsWeaponEquipped() => _isWeaponEquipped;
+        public bool IsWeaponEquipped() => _isWeaponEquipped;
         /// <summary>
         /// Equips the weapon if the player has one.
         /// </summary>
@@ -199,7 +170,7 @@ namespace Weapon
         {
             _isAiming = true;
             if (playerCamera)
-                playerCamera.fieldOfView = aimFOV;
+                playerCamera.fieldOfView = weaponData != null ? weaponData.aimFOV :  weaponData.normalFOV;
         }
         /// <summary>
         /// Stops aiming (restores camera FOV).
@@ -208,7 +179,7 @@ namespace Weapon
         {
             _isAiming = false;
             if (playerCamera)
-                playerCamera.fieldOfView = normalFOV;
+                playerCamera.fieldOfView = weaponData != null ? weaponData.normalFOV :  weaponData.aimFOV;
         }
         /// <summary>
         /// Handles camera recoil recovery over time.
@@ -219,7 +190,7 @@ namespace Weapon
             // Lerp recoil offset back to zero
             if (Mathf.Abs(_recoilOffset) > 0.001f)
             {
-                _recoilOffset = Mathf.Lerp(_recoilOffset, 0f, recoilRecovery * Time.deltaTime);
+                _recoilOffset = Mathf.Lerp(_recoilOffset, 0f, weaponData.recoilRecovery * Time.deltaTime);
             }
             // Apply recoil offset additively to original rotation
             playerCamera.transform.localRotation = _originalCameraRotation * Quaternion.Euler(-_recoilOffset, 0f, 0f);
@@ -236,19 +207,30 @@ namespace Weapon
                 var bullet = bulletPool.GetBullet();
                 bullet.transform.position = firePoint.position;
                 bullet.transform.rotation = firePoint.rotation * Quaternion.Euler(90f, 0f, 0f);
-                // Context-sensitive spread
-                float spread = minSpreadAngle;
+                bullet.SetWeaponController(this);
+                bullet.SetDamage(GetWeaponDamage());
+                Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+                Vector3 targetPoint;
+                if (Physics.Raycast(ray, out RaycastHit hit, 1000f))
+                {
+                    targetPoint = hit.point;
+                }
+                else
+                {
+                    targetPoint = playerCamera.transform.position + playerCamera.transform.forward * 1000f;
+                }
+                Vector3 shootDir = (targetPoint - firePoint.position).normalized;
+                float spread = weaponData != null ? weaponData.minSpreadAngle : minSpreadAngle;
                 if (!IsAiming)
                 {
                     if (_isFiring && _fireHoldTimer > fullAutoThreshold)
-                        spread = autoSpreadAngle;
+                        spread = weaponData != null ? weaponData.autoSpreadAngle : autoSpreadAngle;
                 }
-                Vector3 shootDir = GetSpreadDirection(playerCamera.transform.forward, spread);
+                shootDir = GetSpreadDirection(shootDir, spread);
                 bullet.Fire(shootDir);
                 _currentAmmo--;
-                onAmmoChanged?.Invoke(_currentAmmo, maxAmmo);
-                // Add recoil offset (additive)
-                _recoilOffset += recoilAmount;
+                onAmmoChanged?.Invoke(_currentAmmo, weaponData != null ? weaponData.maxAmmo : maxAmmo);
+                _recoilOffset += weaponData != null ? weaponData.recoilAmount : recoilAmount;
             }
         }
         /// <summary>
@@ -279,12 +261,14 @@ namespace Weapon
             if (_isReloading)
             {
                 _reloadTimer += Time.deltaTime;
-                if (_reloadTimer >= reloadTime)
+                float reloadTimeVal = weaponData != null ? weaponData.reloadTime : reloadTime;
+                int maxAmmoVal = weaponData != null ? weaponData.maxAmmo : maxAmmo;
+                if (_reloadTimer >= reloadTimeVal)
                 {
-                    _currentAmmo = maxAmmo;
+                    _currentAmmo = maxAmmoVal;
                     _isReloading = false;
                     _reloadTimer = 0f;
-                    onAmmoChanged?.Invoke(_currentAmmo, maxAmmo);
+                    onAmmoChanged?.Invoke(_currentAmmo, maxAmmoVal);
                 }
             }
         }
@@ -320,14 +304,47 @@ namespace Weapon
             }
         }
 
+        // Returns the damage value for the current weapon
+        public float GetWeaponDamage() => weaponData != null ? weaponData.damage : 25f;
+
         private void Awake()
         {
-            _currentAmmo = maxAmmo;
-            onAmmoChanged?.Invoke(_currentAmmo, maxAmmo);
-            onWeaponChanged?.Invoke("DefaultWeapon"); // Replace with actual weapon name if needed
+            int maxAmmoVal = weaponData != null ? weaponData.maxAmmo : maxAmmo;
+            _currentAmmo = maxAmmoVal;
+            onAmmoChanged?.Invoke(_currentAmmo, maxAmmoVal);
+            onWeaponChanged?.Invoke(weaponData != null ? weaponData.weaponName : "DefaultWeapon");
             if (playerCamera)
                 _originalCameraRotation = playerCamera.transform.localRotation;
             _recoilOffset = 0f;
+        }
+        public void OnWeaponPickedUp(GameObject weaponObject)
+        {
+            var data = weaponObject.GetComponent<WeaponPickup>()?.weaponData;
+            if (data != null)
+            {
+                weaponData = data;
+                int maxAmmoVal = weaponData.maxAmmo;
+                // Restore ammo if previously used
+                if (weaponAmmoStates.TryGetValue(weaponData.weaponName, out int savedAmmo))
+                    _currentAmmo = savedAmmo;
+                else
+                    _currentAmmo = maxAmmoVal;
+                onWeaponChanged?.Invoke(weaponData.weaponName);
+                onAmmoChanged?.Invoke(_currentAmmo, maxAmmoVal);
+            }
+            _hasWeapon = true;
+            EquipWeapon();
+        }
+        public void OnWeaponDropped(GameObject weaponObject)
+        {
+            // Save current ammo for this weapon
+            if (weaponData != null)
+                weaponAmmoStates[weaponData.weaponName] = _currentAmmo;
+            _hasWeapon = false;
+            _isWeaponEquipped = false;
+            StopAiming();
+            onWeaponActiveChanged?.Invoke(false);
+            // Optionally clear references, update UI, etc.
         }
     }
 }

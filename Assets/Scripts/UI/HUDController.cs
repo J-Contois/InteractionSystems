@@ -17,6 +17,8 @@ namespace UI
         [SerializeField] private Slider staminaSlider;
         [SerializeField] private WeaponController weaponController;
         [SerializeField] private PlayerMovement playerMovement;
+        [SerializeField] private GameObject generalCrosshairUI;
+        [SerializeField] private GameObject weaponCrosshairUI;
 
         private void Start()
         {
@@ -31,11 +33,21 @@ namespace UI
                 playerMovement.onStaminaChanged.AddListener(UpdateStamina);
             }
             SetWeaponUIVisible(weaponController != null && weaponController.HasWeapon());
+            UpdateCrosshairVisibility(weaponController != null && weaponController.HasWeapon() && weaponController.IsWeaponEquipped());
         }
 
         private void OnWeaponActiveChanged(bool active)
         {
             SetWeaponUIVisible(active);
+            UpdateCrosshairVisibility(active);
+        }
+
+        private void UpdateCrosshairVisibility(bool weaponActive)
+        {
+            if (generalCrosshairUI != null)
+                generalCrosshairUI.SetActive(!weaponActive);
+            if (weaponCrosshairUI != null)
+                weaponCrosshairUI.SetActive(weaponActive);
         }
 
         public void UpdateAmmo(int current, int max)

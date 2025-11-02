@@ -9,12 +9,12 @@ namespace Core
         /// Activates the object.
         /// </summary>
         public void Activate();
-    
+        
         /// <summary>
         /// Deactivates the object.
         /// </summary>
         public void Deactivate();
-
+        
         /// <summary>
         /// Toggles the state of the object (active to inactive or vice versa).
         /// </summary>

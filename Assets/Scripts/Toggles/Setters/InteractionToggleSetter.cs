@@ -7,9 +7,6 @@ namespace Toggles.Setters
     /// </summary>
     public class InteractionToggleSetter : BaseToggleSetter
     {
-        /// <summary>
-        /// Calls Switch() to interact with the toggle.
-        /// </summary>
         public void Interact()
         {
             Switch();

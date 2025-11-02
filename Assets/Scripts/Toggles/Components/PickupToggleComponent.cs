@@ -1,20 +1,26 @@
 ﻿using UnityEngine;
+
 using Core;
 
 namespace Toggles.Components
 {
     /// <summary>
+    /// Component that allows a player to pick up an object and hold it in hand.
+    /// Handles parenting, physics, and interaction with PickupSupports.
     /// Handles pickup logic for objects, including weapons. Inherits from BaseToggleComponent.
     /// </summary>
     public class PickupToggleComponent : BaseToggleComponent
     {
         [Header("References")]
-        [Tooltip("Reference to the pickup object.")]
-        [SerializeField] private GameObject pickupObject;
-        [Tooltip("Direct reference to the socket for pickup placement.")]
-        [SerializeField] private Transform pickupSocket;
+        [Tooltip("The GameObject to pick up")]
+        [SerializeField] private GameObject pickupObject = null;
+        
+        [Tooltip("The Transform where the picked object will be held")]
+        [SerializeField] private Transform hand = null;
+
         [Tooltip("Reference to WeaponController if this is a weapon.")]
         [SerializeField] private Weapon.WeaponController weaponController;
+        
         [Tooltip("Is this pickup a weapon?")]
         [SerializeField] private bool isWeapon;
 
@@ -22,69 +28,63 @@ namespace Toggles.Components
         private Collider _collider;
 
         private static PickupToggleComponent _currentPickup;
+        
         /// <summary>
-        /// Returns the currently held pickup component.
+        /// The currently held PickupToggleComponent instance.
         /// </summary>
         public static PickupToggleComponent CurrentPickup => _currentPickup;
 
-        private Transform hand;
-        private Transform _pickupSocket;
-
         /// <summary>
-        /// Initializes references and disables hierarchy traversal.
+        /// Automatically assign the pickupObject to self if not set in inspector.
+        /// </summary>
+        private void Reset()
+        {
+            if (pickupObject == null)
+                pickupObject = gameObject;
+        }
+        
+        /// <summary>
+        /// Initializes references and warns if mandatory fields are missing.
         /// </summary>
         private void Awake()
         {
-            pickupObject ??= gameObject;
+            if (pickupObject == null)
+            {
+                pickupObject = gameObject;
+                Debug.LogWarning($"{gameObject.name}: pickupObject was null at runtime, assigned to self.");
+            }
+
+            if (hand == null)
+                Debug.LogWarning($"{gameObject.name}: hand reference is not set!");
+            
             _rigidbody = pickupObject.GetComponent<Rigidbody>();
             _collider = pickupObject.GetComponent<Collider>();
-            // No more hierarchy traversal; pickupSocket is assigned directly in inspector
         }
 
         /// <summary>
-        /// Handles deactivation logic: detaches object, enables physics, notifies WeaponController if weapon.
-        /// </summary>
-        protected override void DeactivateComponent()
-        {
-            pickupObject.transform.SetParent(null);
-            SetPhysics(enabled: true);
-            Debug.Log(_currentPickup.gameObject.name);
-            Debug.Log(this.gameObject.name);
-            if (_currentPickup == this)
-                _currentPickup = null;
-            // Notify WeaponController only if this is a weapon
-            if (isWeapon && weaponController != null)
-            {
-                weaponController.OnWeaponDropped(pickupObject);
-            }
-        }
-
-        /// <summary>
-        /// Handles activation logic: attaches object to socket, disables physics, notifies WeaponController if weapon.
+        /// Activates the pickup, attaching the object to the player's hand
+        /// and disabling physics.
         /// </summary>
         protected override void ActivateComponent()
         {
             if (_currentPickup != null && _currentPickup != this)
-            {
                 _currentPickup.DeactivateComponent();
-            }
+
             _currentPickup = this;
-            Debug.Log(_currentPickup.gameObject.name);
+
             if (pickupObject.transform.parent != null &&
                 pickupObject.transform.parent.TryGetComponent<PickupSupport>(out var support))
             {
                 Debug.Log("ICI");
                 support.ReleaseObject();
             }
-            if (pickupSocket == null)
-            {
-                Debug.LogError("PickupSocket reference is not set in the inspector.");
-                return;
-            }
-            pickupObject.transform.SetParent(pickupSocket, false);
+
+            pickupObject.transform.SetParent(hand, false);
             pickupObject.transform.localPosition = Vector3.zero;
             pickupObject.transform.localRotation = Quaternion.identity;
+
             SetPhysics(enabled: false);
+            
             // Notify WeaponController only if this is a weapon
             if (isWeapon && weaponController != null)
             {
@@ -93,8 +93,28 @@ namespace Toggles.Components
         }
 
         /// <summary>
-        /// Enables/disables physics for the pickup object.
+        /// Handles deactivation logic: detaches object,
+        /// enables physics, notifies WeaponController if weapon.
         /// </summary>
+        protected override void DeactivateComponent()
+        {
+            pickupObject.transform.SetParent(null);
+            SetPhysics(enabled: true);
+
+            if (_currentPickup == this)
+                _currentPickup = null;
+            
+            // Notify WeaponController only if this is a weapon
+            if (isWeapon && weaponController != null)
+            {
+                weaponController.OnWeaponDropped(pickupObject);
+            }
+        }
+
+        /// <summary>
+        /// Enables or disables physics on the pickup object.
+        /// </summary>
+        /// <param name="enabled">If true, physics is enabled; otherwise disabled.</param>
         private void SetPhysics(bool enabled)
         {
             if (_rigidbody != null)
@@ -110,6 +130,8 @@ namespace Toggles.Components
         /// <summary>
         /// Attempts to place the pickup object on a PickupSupport. Handles unequip logic for weapons.
         /// </summary>
+        /// <param name="support">The PickupSupport to place the object on.</param>
+        /// <returns>True if the object was successfully placed; false otherwise.</returns>
         public bool TryPlaceOn(PickupSupport support)
         {
             if (support == null || !support.CanPlace(pickupObject))

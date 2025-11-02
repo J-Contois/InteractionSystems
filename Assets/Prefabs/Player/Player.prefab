@@ -543,7 +543,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactionMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 192
 --- !u!114 &184051189033091889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -584,7 +584,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
     m_ActionId: ce23b222-e57e-448a-b0ee-d9593cc5d2f2
-    m_ActionName: 'Default/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]'
+    m_ActionName: Default/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1515663712610279231}
@@ -600,7 +600,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
     m_ActionId: e9234091-6ea3-45d7-9d3e-bc040f29f778
-    m_ActionName: 'Default/Look[/Mouse/delta]'
+    m_ActionName: Default/Look[/Mouse/delta]
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8424269685429220057}
@@ -616,7 +616,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
     m_ActionId: bbef7364-e50a-4673-9d8a-3c026a9065de
-    m_ActionName: 'Default/Interact[/Keyboard/e]'
+    m_ActionName: Default/Interact[/Keyboard/e]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Default

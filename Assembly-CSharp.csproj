@@ -46,16 +46,16 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.1.17f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\QuickOutline\Scripts\Outline.cs" />
-    <Compile Include="Assets\Scripts\Weapon\WeaponController.cs" />
     <Compile Include="Assets\Scripts\Toggles\Components\AnimatorToggleComponent.cs" />
     <Compile Include="Assets\Scripts\PuzzleSupportLinker.cs" />
+    <Compile Include="Assets\QuickOutline\Scripts\Outline.cs" />
+    <Compile Include="Assets\Scripts\Weapon\WeaponController.cs" />
     <Compile Include="Assets\Scripts\PickupSupport.cs" />
     <Compile Include="Assets\Scripts\Weapon\BulletBehavior.cs" />
+    <Compile Include="Assets\Scripts\PuzzleButton.cs" />
     <Compile Include="Assets\Scripts\Enemy.cs" />
     <Compile Include="Assets\Scripts\Weapon\CrosshairUI.cs" />
     <Compile Include="Assets\Scripts\Weapon\BulletPool.cs" />
-    <Compile Include="Assets\Scripts\PuzzleButton.cs" />
     <Compile Include="Assets\Scripts\Core\IToggle.cs" />
     <Compile Include="Assets\Scripts\Toggles\Components\MultiConditionToggleComponent.cs" />
     <Compile Include="Assets\Scripts\Toggles\Setters\InteractionToggleSetter.cs" />

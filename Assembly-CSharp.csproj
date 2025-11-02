@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Toggles\Components\AnimatorToggleComponent.cs" />
+    <Compile Include="Assets\Scripts\PuzzleSupportLinker.cs" />
     <Compile Include="Assets\Scripts\PickupSupport.cs" />
     <Compile Include="Assets\Scripts\PuzzleButton.cs" />
     <Compile Include="Assets\Scripts\Core\IToggle.cs" />

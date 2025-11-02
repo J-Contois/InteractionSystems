@@ -1,4 +1,5 @@
 using UnityEngine;
+
 using Core;
 
 namespace Toggles.Components
@@ -11,7 +12,7 @@ namespace Toggles.Components
     {
         [Header("Animation Settings")]
         [Tooltip("The Animator to control")]
-        [SerializeField] private Animator animator;
+        [SerializeField] private Animator animator = null;
         
         [Tooltip("If true, starts the animation in play mode")]
         [SerializeField] private bool startInPlayMode = false;
@@ -21,52 +22,55 @@ namespace Toggles.Components
         
         [Tooltip("Animation trigger name for deactivation")]
         [SerializeField] private string deactivateTriggerName = "Deactivate";
+        
+        [SerializeField] private bool isOpen = false;
 
         private void Reset()
         {
             if (animator == null)
-            {
                 animator = GetComponent<Animator>();
-            }
         }
         
         private void Awake()
         {
             if (!startInPlayMode && animator != null)
-            {
-                animator.enabled = false;
-                
-                animator.ResetTrigger(activateTriggerName);
-                animator.ResetTrigger(deactivateTriggerName);
-            }
+                animator.Update(0);
         }
-
+        
         protected override void ActivateComponent()
         {
-            if (animator != null)
-            {
-                Debug.Log($"{gameObject.name} - Triggering animation: {activateTriggerName}");
-                animator.enabled = true;
-                animator.SetTrigger(activateTriggerName);
-            }
-            else
-            {
-                Debug.LogWarning($"{gameObject.name} - No Animator assigned!");
-            }
+            PlayActivateAnimation();
         }
-
+        
         protected override void DeactivateComponent()
         {
-            if (animator != null)
-            {
-                Debug.Log($"{gameObject.name} - Triggering animation: {deactivateTriggerName}");
-                animator.enabled = true;
-                animator.SetTrigger(deactivateTriggerName);
-            }
-            else
-            {
-                Debug.LogWarning($"{gameObject.name} - No Animator assigned!");
-            }
+            PlayDeactivateAnimation();
+        }
+        
+        /// <summary>
+        /// Public method to play the activation animation, regardless of state
+        /// </summary>
+        public void PlayActivateAnimation()
+        {
+            if (animator == null || isOpen) return;
+            
+            animator.ResetTrigger(activateTriggerName);
+            
+            animator.SetTrigger(activateTriggerName);
+            isOpen = true;
+        }
+
+        /// <summary>
+        /// Public method to play the deactivation animation, regardless of state
+        /// </summary>
+        public void PlayDeactivateAnimation()
+        {
+            if (animator == null || !isOpen) return;
+            
+            animator.ResetTrigger(deactivateTriggerName);
+            
+            animator.SetTrigger(deactivateTriggerName);
+            isOpen = false;
         }
     }
 }

@@ -6,25 +6,26 @@ public class PickupSupport : MonoBehaviour
     public enum ValidationMode
     {
         SpecificObject,  // Specific GameObject instance
-        ObjectWithTag    // Any GameObject with a specific layers tag
+        ObjectWithLayer    // Any GameObject with a specific layers tag
     }
 
     [Header("Pickup Validation")]
     [Tooltip("How to validate if an object can be placed")]
-    [SerializeField] private ValidationMode validationMode = ValidationMode.ObjectWithTag;
+    [SerializeField] private ValidationMode validationMode = ValidationMode.ObjectWithLayer;
 
     [Header("Specific Object Mode")]
     [Tooltip("The specific GameObject instance allowed (only used if mode is SpecificObject)")]
-    [SerializeField] private GameObject allowedPickup;
+    [SerializeField] private GameObject allowedPickup = null;
 
-    [Header("Tag Mode")]
-    [Tooltip("Tag that pickup objects must have (only used if mode is ObjectWithTag)")]
-    [SerializeField] private string requiredTag = "Untagged";
+    [Header("Layer Mode")]
+    [Tooltip("Layer that pickup objects must have (only used if mode is ObjectWithLayer)")]
+    [SerializeField] private string requiredLayerName = null;
 
     [Header("Placement")]
-    [SerializeField] private Transform placementPoint;
+    [SerializeField] private Transform placementPoint = null;
 
     private GameObject _currentObject;
+    public GameObject GetPlacedObject() => _currentObject;
     
     /// <summary>
     /// Returns true if this support currently has an object placed on it.
@@ -44,7 +45,7 @@ public class PickupSupport : MonoBehaviour
             return validationMode switch
             {
                 ValidationMode.SpecificObject => _currentObject == allowedPickup,
-                ValidationMode.ObjectWithTag => _currentObject.CompareTag(requiredTag),
+                ValidationMode.ObjectWithLayer => _currentObject.layer == LayerMask.NameToLayer(requiredLayerName),
                 _ => false
             };
         }
@@ -61,7 +62,7 @@ public class PickupSupport : MonoBehaviour
         return validationMode switch
         {
             ValidationMode.SpecificObject => obj == allowedPickup,
-            ValidationMode.ObjectWithTag => obj.CompareTag(requiredTag),
+            ValidationMode.ObjectWithLayer => obj.layer == LayerMask.NameToLayer(requiredLayerName),
             _ => false
         };
 

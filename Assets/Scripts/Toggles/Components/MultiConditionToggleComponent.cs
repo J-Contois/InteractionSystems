@@ -9,74 +9,55 @@ namespace Toggles.Components
     /// </summary>
     public class MultiConditionToggleComponent : BaseToggleComponent
     {
-        [Header("Conditions")]
-        [Tooltip("List of PickupSupports that must all have objects placed")]
-        [SerializeField] private PickupSupport[] requiredSupports;
+        [Header("Puzzle Supports Validation")]
+        [Tooltip("List of links between media and objects needed to solve the puzzle")]
+        [SerializeField] private PuzzleSupportLinker[] puzzleLinks = null;
 
         [Header("Target to activate")]
         [Tooltip("The toggle component to activate when conditions are met")]
-        [SerializeField] private BaseToggleComponent targetComponent;
+        [SerializeField] private AnimatorToggleComponent targetComponent = null;
 
         /// <summary>
         /// Checks if all conditions are met.
         /// </summary>
-        /// <returns>True if all supports have objects placed</returns>
+        /// <returns>True if all supports have the correct object placed</returns>
         private bool AreConditionsMet()
         {
-            if (requiredSupports == null || requiredSupports.Length == 0)
+            if (puzzleLinks == null || puzzleLinks.Length == 0)
             {
-                Debug.LogWarning("No required supports assigned!");
+                Debug.LogWarning("No PuzzleSupportLinker assigned in the puzzle manager!");
                 return false;
             }
 
-            foreach (var support in requiredSupports)
+            foreach (var link in puzzleLinks)
             {
-                if (support == null)
+                if (link == null || !link.IsValid())
                 {
-                    Debug.LogWarning("Null support in required supports array!");
-                    continue;
-                }
-
-                if (!support.HasCorrectObject)
-                {
+                    Debug.Log($"Condition failed for {link?.name}");
                     return false;
                 }
             }
+            
+            Debug.Log("All conditions are met!");
             return true;
         }
 
-        protected override void ActivateComponent()
+        protected override void ActivateComponent() {}
+
+        protected override void DeactivateComponent() {}
+
+        public void ValidatePuzzle()
         {
+            if (targetComponent == null) return;
+            
             if (AreConditionsMet())
             {
-                Debug.Log("All conditions met! Activating target...");
-                if (targetComponent != null)
-                {
-                    targetComponent.Activate();
-                }
-                else
-                {
-                    Debug.LogWarning("No target component assigned!");
-                }
+                targetComponent.PlayActivateAnimation();
             }
             else
             {
-                Debug.Log("Conditions not met. All supports must have their objects.");
+                targetComponent.PlayDeactivateAnimation();
             }
-        }
-
-        protected override void DeactivateComponent()
-        {
-            Debug.Log("Deactivating target...");
-            if (targetComponent != null)
-            {
-                targetComponent.Deactivate();
-            }
-        }
-        
-        public void ValidatePuzzle()
-        {
-            Activate();
         }
     }
 }

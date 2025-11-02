@@ -119,6 +119,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &742832749 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2305670164864257980, guid: 734f8d96c4af6e14f8c26bc519de46fc, type: 3}
+  m_PrefabInstance: {fileID: 8886611121214276879}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &800679309
 GameObject:
   m_ObjectHideFlags: 0
@@ -168,6 +173,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1181759097 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5184995149536234681, guid: 2beeb5916a3e63645b589da4c6a2b7d5, type: 3}
+  m_PrefabInstance: {fileID: 5756655399407543246}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1317168452
 GameObject:
   m_ObjectHideFlags: 0
@@ -398,6 +408,11 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &1464294280 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5180602983213341193, guid: 4da439f89f2201f4c8d44e0dcce4b94d, type: 3}
+  m_PrefabInstance: {fileID: 9050715191413915116}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1688399620
 GameObject:
   m_ObjectHideFlags: 0
@@ -430,6 +445,11 @@ Transform:
   - {fileID: 1317168453}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2003003862 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9019122062971795770, guid: 2150adbe6d1ace74bb50966922858b98, type: 3}
+  m_PrefabInstance: {fileID: 7636940974149787502}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &66888698368564598
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -438,6 +458,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 43930096144026016, guid: f1cf6078c31654d40aac8fe8ddaa5c83, type: 3}
+      propertyPath: expectedObject
+      value: 
+      objectReference: {fileID: 1464294280}
+    - target: {fileID: 3933982736951156302, guid: f1cf6078c31654d40aac8fe8ddaa5c83, type: 3}
+      propertyPath: expectedObject
+      value: 
+      objectReference: {fileID: 2003003862}
+    - target: {fileID: 4510470518996088198, guid: f1cf6078c31654d40aac8fe8ddaa5c83, type: 3}
+      propertyPath: expectedObject
+      value: 
+      objectReference: {fileID: 742832749}
     - target: {fileID: 4568179730659084345, guid: f1cf6078c31654d40aac8fe8ddaa5c83, type: 3}
       propertyPath: m_Name
       value: PuzzleManager
@@ -482,6 +514,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7699586168545998005, guid: f1cf6078c31654d40aac8fe8ddaa5c83, type: 3}
+      propertyPath: expectedObject
+      value: 
+      objectReference: {fileID: 1181759097}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

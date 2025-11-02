@@ -73,5 +73,10 @@ namespace Toggles.Components
                 targetComponent.Deactivate();
             }
         }
+        
+        public void ValidatePuzzle()
+        {
+            Activate();
+        }
     }
 }

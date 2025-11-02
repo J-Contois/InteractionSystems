@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 5351d51f7e4ee754bb000879ffaccba0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -314,7 +314,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 5351d51f7e4ee754bb000879ffaccba0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -403,7 +403,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f548b07e0768c2c4c968793373c1a3bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  validationMode: 0
   allowedPickup: {fileID: 8865735897943530564}
+  requiredTag: 
   placementPoint: {fileID: 5131988989588078486}
 --- !u!1 &6140484071814743164
 GameObject:
@@ -485,7 +487,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f548b07e0768c2c4c968793373c1a3bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  validationMode: 0
   allowedPickup: {fileID: 5053238380270060063}
+  requiredTag: 
   placementPoint: {fileID: 4265169251585735872}
 --- !u!1 &7195698786886757981
 GameObject:
@@ -533,7 +537,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f548b07e0768c2c4c968793373c1a3bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  validationMode: 0
   allowedPickup: {fileID: 8127113868241863545}
+  requiredTag: 
   placementPoint: {fileID: 5874504626545911581}
 --- !u!1 &8511000763171209260
 GameObject:
@@ -600,7 +606,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 5351d51f7e4ee754bb000879ffaccba0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

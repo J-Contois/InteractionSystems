@@ -80,6 +80,7 @@ namespace Toggles.Components
 
         public bool TryPlaceOn(PickupSupport support)
         {
+            Debug.Log(support.name + " et " + pickupObject.name);
             if (support == null || !support.CanPlace(pickupObject))
                 return false;
 

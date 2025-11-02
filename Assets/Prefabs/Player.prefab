@@ -544,7 +544,7 @@ MonoBehaviour:
   minMaxYaw: {x: -90, y: 90}
   interactionMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 192
   root: {fileID: 2736877304817022793}
   head: {fileID: 5678782062101192900}
 --- !u!114 &184051189033091889

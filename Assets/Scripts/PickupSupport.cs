@@ -24,7 +24,6 @@ public class PickupSupport : MonoBehaviour
     [Header("Placement")]
     [SerializeField] private Transform placementPoint;
 
-
     private GameObject _currentObject;
     
     /// <summary>

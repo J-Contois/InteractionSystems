@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Toggles\Components\AnimatorToggleComponent.cs" />
     <Compile Include="Assets\Scripts\PickupSupport.cs" />
+    <Compile Include="Assets\Scripts\PuzzleButton.cs" />
     <Compile Include="Assets\Scripts\Core\IToggle.cs" />
     <Compile Include="Assets\Scripts\Toggles\Components\MultiConditionToggleComponent.cs" />
     <Compile Include="Assets\Scripts\Toggles\Setters\InteractionToggleSetter.cs" />

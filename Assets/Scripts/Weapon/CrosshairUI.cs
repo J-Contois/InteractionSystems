@@ -50,7 +50,9 @@ namespace Weapon
                     break;
             }
         }
-
+        /// <summary>
+        /// Coroutine to reset crosshair state after shooting.
+        /// </summary>
         private System.Collections.IEnumerator ResetAfterShoot()
         {
             yield return new WaitForSeconds(0.1f);

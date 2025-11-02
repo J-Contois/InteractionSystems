@@ -1,26 +1,40 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Controls enemy health, death, and looting logic. Handles health bar visuals and death behavior.
+/// </summary>
 public class Enemy : MonoBehaviour
 {
     [Header("Health Settings")]
+    [Tooltip("Maximum health of the enemy.")]
     [SerializeField] private float maxHealth = 100f;
-    private float currentHealth;
+    [Tooltip("Current health of the enemy.")]
+    [SerializeField] private float currentHealth = 100f;
     [Header("UI")]
-    [SerializeField] private Slider healthBar;
-    [SerializeField] private Image healthBarFill; // Reference to the fill image
+    [Tooltip("Slider for health bar.")]
+    [SerializeField] private Slider healthBar = null;
+    [Tooltip("Image for health bar fill.")]
+    [SerializeField] private Image healthBarFill = null;
+    [Tooltip("Color when health is full.")]
     [SerializeField] private Color fullHealthColor = Color.green;
+    [Tooltip("Color when health is low.")]
     [SerializeField] private Color lowHealthColor = Color.red;
     [Header("Ragdoll")]
-    [SerializeField] private GameObject ragdollRoot;
-    [SerializeField] private Animator animator;
-    [SerializeField] private Collider mainCollider;
+    [Tooltip("Animator for ragdoll/death animation.")]
+    [SerializeField] private Animator animator = null;
+    [Tooltip("Main collider for the enemy.")]
+    [SerializeField] private Collider mainCollider = null;
     [Header("Loot Toggle")]
-    [SerializeField] private EnemyLootToggle lootToggle;
+    [Tooltip("Reference to the loot toggle component.")]
+    [SerializeField] private EnemyLootToggle lootToggle = null;
 
     private float damageImmunityTime = 0.1f; // Time in seconds to be immune after taking damage
     private float lastDamageTime = -999f;
 
+    /// <summary>
+    /// Initializes health bar and disables highlight on start.
+    /// </summary>
     private void Awake()
     {
         currentHealth = maxHealth;
@@ -35,6 +49,9 @@ public class Enemy : MonoBehaviour
             lootToggle.highlightEffect.enabled = false;
     }
 
+    /// <summary>
+    /// Applies damage to the enemy, triggers death if health reaches zero.
+    /// </summary>
     public void TakeDamage(float amount)
     {
         // Prevent double damage from the same bullet passing through multiple colliders
@@ -50,6 +67,9 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the health bar visuals and color.
+    /// </summary>
     private void UpdateHealthBar()
     {
         if (healthBar != null)
@@ -62,6 +82,9 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles enemy death: disables health bar, disables animator/collider, lays flat, enables looting.
+    /// </summary>
     private void Die()
     {
         // Hide health bar
@@ -79,7 +102,7 @@ public class Enemy : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, 5f))
         {
-            transform.position = hit.point +  new Vector3(0f, 0.5f, 0f); // Adjust height as needed
+            transform.position = hit.point + new Vector3(0f, 0.5f, 0f); // Adjust height as needed
         }
         // Enable looting via EnemyLootToggle
         if (lootToggle != null)

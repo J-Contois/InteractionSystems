@@ -12,14 +12,24 @@ namespace UI
     public class HUDController : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private TMP_Text ammoText;
-        [SerializeField] private TMP_Text weaponText;
-        [SerializeField] private Slider staminaSlider;
-        [SerializeField] private WeaponController weaponController;
-        [SerializeField] private PlayerMovement playerMovement;
-        [SerializeField] private GameObject generalCrosshairUI;
-        [SerializeField] private GameObject weaponCrosshairUI;
+        [Tooltip("Text for displaying current ammo.")]
+        [SerializeField] private TMP_Text ammoText = null;
+        [Tooltip("Text for displaying weapon name.")]
+        [SerializeField] private TMP_Text weaponText = null;
+        [Tooltip("Slider for stamina bar.")]
+        [SerializeField] private Slider staminaSlider = null;
+        [Tooltip("Reference to WeaponController.")]
+        [SerializeField] private WeaponController weaponController = null;
+        [Tooltip("Reference to PlayerMovement.")]
+        [SerializeField] private PlayerMovement playerMovement = null;
+        [Tooltip("General crosshair UI GameObject.")]
+        [SerializeField] private GameObject generalCrosshairUI = null;
+        [Tooltip("Weapon crosshair UI GameObject.")]
+        [SerializeField] private GameObject weaponCrosshairUI = null;
 
+        /// <summary>
+        /// Initializes HUD and crosshair visibility on start.
+        /// </summary>
         private void Start()
         {
             if (weaponController != null)
@@ -36,12 +46,18 @@ namespace UI
             UpdateCrosshairVisibility(weaponController != null && weaponController.HasWeapon() && weaponController.IsWeaponEquipped());
         }
 
+        /// <summary>
+        /// Called when the active state of the weapon changes.
+        /// </summary>
         private void OnWeaponActiveChanged(bool active)
         {
             SetWeaponUIVisible(active);
             UpdateCrosshairVisibility(active);
         }
 
+        /// <summary>
+        /// Updates the visibility of the crosshair based on weapon activity.
+        /// </summary>
         private void UpdateCrosshairVisibility(bool weaponActive)
         {
             if (generalCrosshairUI != null)
@@ -50,6 +66,9 @@ namespace UI
                 weaponCrosshairUI.SetActive(weaponActive);
         }
 
+        /// <summary>
+        /// Updates ammo display.
+        /// </summary>
         public void UpdateAmmo(int current, int max)
         {
             SetWeaponUIVisible(true);
@@ -57,6 +76,9 @@ namespace UI
                 ammoText.text = $"Ammo: {current} / {max}";
         }
 
+        /// <summary>
+        /// Updates weapon name display.
+        /// </summary>
         public void UpdateWeapon(string weaponName)
         {
             SetWeaponUIVisible(true);
@@ -64,12 +86,18 @@ namespace UI
                 weaponText.text = $"Weapon: {weaponName}";
         }
 
+        /// <summary>
+        /// Updates stamina bar display.
+        /// </summary>
         public void UpdateStamina(float normalized)
         {
             if (staminaSlider != null)
                 staminaSlider.value = normalized;
         }
 
+        /// <summary>
+        /// Sets visibility of weapon UI elements.
+        /// </summary>
         private void SetWeaponUIVisible(bool visible)
         {
             if (ammoText != null)

@@ -12,22 +12,27 @@ namespace Weapon
         /// <summary>Lifetime of the bullet in seconds before deactivation.</summary>
         [SerializeField] private float _lifeTime = 2f;
         /// <summary>Current movement direction of the bullet.</summary>
-        private Vector3 _direction;
+        private Vector3 _direction = new Vector3();
         /// <summary>Timer tracking bullet's lifetime.</summary>
-        private float _timer;
+        private float _timer = 0f;
         /// <summary>Whether the bullet is currently active.</summary>
-        private bool _active;
+        private bool _active = false;
 
-        private Rigidbody _rigidbody;
+        private Rigidbody _rigidbody = null;
 
         [Header("Hit Effects")]
         [Tooltip("Prefab for hit effect (particle)")]
-        [SerializeField] private GameObject hitEffectPrefab;
+        [SerializeField] private GameObject hitEffectPrefab = null;
         [Tooltip("Audio clip for hit sound")]
-        [SerializeField] private AudioClip hitSound;
-        private AudioSource _audioSource;
+        [SerializeField] private AudioClip hitSound = null;
+        [SerializeField] private AudioSource _audioSource = null;
         [Tooltip("Reference to WeaponController for screen shake")]
-        [SerializeField] private WeaponController weaponController;
+        [SerializeField] private WeaponController weaponController = null;
+
+        /// <summary>
+        /// Sets the WeaponController reference for screen shake and hit logic.
+        /// </summary>
+        /// <param name="controller">The WeaponController instance to be used.</param>
         public void SetWeaponController(WeaponController controller)
         {
             weaponController = controller;
@@ -103,6 +108,10 @@ namespace Weapon
         }
 
         private float _damage;
+        /// <summary>
+        /// Sets the damage value for the bullet.
+        /// </summary>
+        /// <param name="damage">The damage amount.</param>
         public void SetDamage(float damage)
         {
             _damage = damage;

@@ -7,7 +7,7 @@ using static UnityEngine.InputSystem.InputAction;
 namespace Player
 {
     /// <summary>
-    /// Main controller for the player. Toute la logique de mouvement/rotation est dans PlayerMovement.
+    /// Main controller for the player. Handles interaction logic. Movement/rotation is in PlayerMovement.
     /// </summary>
     public class Player : MonoBehaviour
     {

@@ -10,29 +10,26 @@ namespace Core
     {
         [Tooltip("Toggle component that will be controlled by this setter")]
         [SerializeField] private BaseToggleComponent toggleComponent = null;
-    
-        /// <inheritdoc/>
-        /// <remarks>
-        /// This implementation delegates the call to BaseToggleComponent.Activate().
-        /// </remarks>
+
+        /// <summary>
+        /// Activates the controlled toggle component.
+        /// </summary>
         public void Activate()
         {
             toggleComponent.Activate();
         }
-    
-        /// <inheritdoc/>
-        /// <remarks>
-        /// This implementation delegates the call to BaseToggleComponent.Deactivate().
-        /// </remarks>
+
+        /// <summary>
+        /// Deactivates the controlled toggle component.
+        /// </summary>
         public void Deactivate()
         {
             toggleComponent.Deactivate();
         }
-    
-        /// <inheritdoc/>
-        /// <remarks>
-        /// This implementation delegates the call to BaseToggleComponent.Switch().
-        /// </remarks>
+
+        /// <summary>
+        /// Switches the controlled toggle component.
+        /// </summary>
         public void Switch()
         {
             toggleComponent.Switch();

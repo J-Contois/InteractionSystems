@@ -1,26 +1,38 @@
 ﻿using UnityEngine;
-
 using Core;
 
 namespace Toggles.Components
 {
+    /// <summary>
+    /// Handles pickup logic for objects, including weapons. Inherits from BaseToggleComponent.
+    /// </summary>
     public class PickupToggleComponent : BaseToggleComponent
     {
         [Header("References")]
+        [Tooltip("Reference to the pickup object.")]
         [SerializeField] private GameObject pickupObject;
-        [SerializeField] private Transform pickupSocket; // Direct reference to the socket
-        [SerializeField] private Weapon.WeaponController weaponController; // Reference to WeaponController
-        [SerializeField] private bool isWeapon; // Is this pickup a weapon?
+        [Tooltip("Direct reference to the socket for pickup placement.")]
+        [SerializeField] private Transform pickupSocket;
+        [Tooltip("Reference to WeaponController if this is a weapon.")]
+        [SerializeField] private Weapon.WeaponController weaponController;
+        [Tooltip("Is this pickup a weapon?")]
+        [SerializeField] private bool isWeapon;
 
         private Rigidbody _rigidbody;
         private Collider _collider;
 
         private static PickupToggleComponent _currentPickup;
+        /// <summary>
+        /// Returns the currently held pickup component.
+        /// </summary>
         public static PickupToggleComponent CurrentPickup => _currentPickup;
 
         private Transform hand;
         private Transform _pickupSocket;
 
+        /// <summary>
+        /// Initializes references and disables hierarchy traversal.
+        /// </summary>
         private void Awake()
         {
             pickupObject ??= gameObject;
@@ -29,6 +41,9 @@ namespace Toggles.Components
             // No more hierarchy traversal; pickupSocket is assigned directly in inspector
         }
 
+        /// <summary>
+        /// Handles deactivation logic: detaches object, enables physics, notifies WeaponController if weapon.
+        /// </summary>
         protected override void DeactivateComponent()
         {
             pickupObject.transform.SetParent(null);
@@ -44,6 +59,9 @@ namespace Toggles.Components
             }
         }
 
+        /// <summary>
+        /// Handles activation logic: attaches object to socket, disables physics, notifies WeaponController if weapon.
+        /// </summary>
         protected override void ActivateComponent()
         {
             if (_currentPickup != null && _currentPickup != this)
@@ -74,6 +92,9 @@ namespace Toggles.Components
             }
         }
 
+        /// <summary>
+        /// Enables/disables physics for the pickup object.
+        /// </summary>
         private void SetPhysics(bool enabled)
         {
             if (_rigidbody != null)
@@ -86,6 +107,9 @@ namespace Toggles.Components
                 _collider.enabled = enabled;
         }
 
+        /// <summary>
+        /// Attempts to place the pickup object on a PickupSupport. Handles unequip logic for weapons.
+        /// </summary>
         public bool TryPlaceOn(PickupSupport support)
         {
             if (support == null || !support.CanPlace(pickupObject))

@@ -10,38 +10,38 @@ namespace Weapon
     {
         [Header("References")]
         [Tooltip("Reference to the Player script")]
-        [SerializeField] private Player.Player player;
+        [SerializeField] private Player.Player player = null;
         [Tooltip("Reference to the crosshair UI GameObject")]
-        [SerializeField] private GameObject crosshairUI;
+        [SerializeField] private GameObject crosshairUI = null;
         [Tooltip("Reference to the player's camera")]
-        [SerializeField] private Camera playerCamera;
+        [SerializeField] private Camera playerCamera = null;
 
         [Header("Weapon Data")]
         [Tooltip("Current weapon data")]
-        [SerializeField] private WeaponData weaponData;
+        [SerializeField] private WeaponData weaponData = null;
         [Header("Weapon References")]
         [Tooltip("Prefab for the bullet/projectile")]
-        [SerializeField] private GameObject bulletPrefab;
+        [SerializeField] private GameObject bulletPrefab = null;
         [Tooltip("Transform for bullet spawn position")]
-        [SerializeField] private Transform firePoint;
+        [SerializeField] private Transform firePoint = null;
         [Tooltip("Bullet pool component")]
-        [SerializeField] private BulletPool bulletPool;
+        [SerializeField] private BulletPool bulletPool = null;
 
         [Header("Screen Shake")]
         [Tooltip("Screen shake intensity on hit")]
         [SerializeField] private float hitShakeIntensity = 0.2f;
         [Tooltip("Screen shake duration on hit")]
         [SerializeField] private float hitShakeDuration = 0.15f;
-        private float _shakeTimer;
-        private float _shakeAmount;
+        private float _shakeTimer = 0f;
+        private float _shakeAmount = 0f;
 
         [Header("Spread Settings")]
         [Tooltip("Minimal spread angle when aiming or single shot")]
         [SerializeField] private float minSpreadAngle = 0.1f;
         [Tooltip("Spread angle for full auto fire")]
         [SerializeField] private float autoSpreadAngle = 3f;
-        private float _fireHoldTimer;
-        private bool _isFiring;
+        private float _fireHoldTimer = 0f;
+        private bool _isFiring = false;
         private const float fullAutoThreshold = 0.2f;
         
         [Header("Weapon Settings (Fallback)")]
@@ -57,9 +57,9 @@ namespace Weapon
         public UnityEngine.Events.UnityEvent<string> onWeaponChanged;
         public UnityEngine.Events.UnityEvent<bool> onWeaponActiveChanged;
         
-        private int _currentAmmo;
-        private bool _isReloading;
-        private float _reloadTimer;
+        private int _currentAmmo = 0;
+        private bool _isReloading = false;
+        private float _reloadTimer = 0f;
 
         /// <summary>Time until next allowed shot.</summary>
         private float _nextFireTime = 0f;
@@ -70,8 +70,8 @@ namespace Weapon
         /// <summary>Whether the weapon is currently equipped.</summary>
         private bool _isWeaponEquipped = false;
 
-        private Quaternion _originalCameraRotation;
-        private float _recoilOffset;
+        private Quaternion _originalCameraRotation = Quaternion.identity;
+        private float _recoilOffset = 0f;
 
         // Stores runtime data for each weapon by name
         private Dictionary<string, int> weaponAmmoStates = new();

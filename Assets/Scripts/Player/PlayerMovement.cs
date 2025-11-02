@@ -71,9 +71,13 @@ namespace Player
         [SerializeField] private Transform cameraTransform;
         
         [Header("Events")]
-        // Invoked when stamina changes (normalized 0-1).
+        /// <summary>
+        /// Invoked when stamina changes (normalized 0-1).
+        /// </summary>
         public UnityEvent<float> onStaminaChanged;
-        // Invoked when movement state changes ("Sprint", "Crouch", "Prone", "Aiming", "Normal").
+        /// <summary>
+        /// Invoked when movement state changes ("Sprint", "Crouch", "Prone", "Aiming", "Normal").
+        /// </summary>
         public UnityEvent<string> onMovementStateChanged;
 
         private Vector3 _input = Vector3.zero;
@@ -98,13 +102,17 @@ namespace Player
         {
             rigidBody = GetComponent<Rigidbody>();
         }
-
+        /// <summary>
+        /// Stores initial camera position for bobbing.
+        /// </summary>
         private void Awake()
         {
             if (cameraTransform != null)
                 _defaultCameraY = cameraTransform.localPosition.y;
         }
-
+        /// <summary>
+        /// Handles input, stamina, camera bobbing, and rotation.
+        /// </summary>
         private void Update()
         {
             HandleInput();
@@ -112,7 +120,9 @@ namespace Player
             HandleCameraBobbing();
             HandleRotation();
         }
-
+        /// <summary>
+        /// Handles smooth rotation for root and head transforms.
+        /// </summary>
         private void HandleRotation()
         {
             // Smoothly interpolate rotation for both root and head
@@ -126,7 +136,9 @@ namespace Player
             Quaternion targetHeadRot = Quaternion.Euler(_currentRotation.x, 0f, 0f);
             head.localRotation = Quaternion.Slerp(head.localRotation, targetHeadRot, rotationSpeed * Time.deltaTime);
         }
-
+        /// <summary>
+        /// Handles movement logic based on current state (sprint, crouch, prone, aiming, normal).
+        /// </summary>
         private void FixedUpdate()
         {
             float currentSpeed;
@@ -161,8 +173,9 @@ namespace Player
             }
             rigidBody.linearVelocity = root.rotation * (currentSpeed * _input.normalized);
         }
-
-
+        /// <summary>
+        /// Handles input for sprint, crouch, and prone.
+        /// </summary>
         private void HandleInput()
         {
             // Sprint
@@ -185,7 +198,9 @@ namespace Player
                 onMovementStateChanged?.Invoke(_isProne ? "Prone" : "Normal");
             }
         }
-
+        /// <summary>
+        /// Handles stamina drain and regeneration.
+        /// </summary>
         private void HandleStamina()
         {
             if (_isSprinting)
@@ -200,7 +215,6 @@ namespace Player
             }
             onStaminaChanged?.Invoke(_currentStamina / maxStamina);
         }
-
         private void HandleCameraBobbing()
         {
             if (cameraTransform == null) return;

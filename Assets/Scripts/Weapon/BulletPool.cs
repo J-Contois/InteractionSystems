@@ -9,11 +9,11 @@ namespace Weapon
     public class BulletPool : MonoBehaviour
     {
         /// <summary>Prefab used to instantiate new bullets.</summary>
-        [SerializeField] private GameObject bulletPrefab;
+        [SerializeField] private GameObject bulletPrefab = null;
         /// <summary>Initial number of bullets in the pool.</summary>
         [SerializeField] private int poolSize = 20;
         /// <summary>Internal list of pooled bullet objects.</summary>
-        private List<BulletBehavior> _pool;
+        private List<BulletBehavior> _pool = null;
 
         /// <summary>
         /// Initializes the bullet pool by instantiating bullet objects.
